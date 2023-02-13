@@ -1,8 +1,16 @@
 const chat = document.getElementById("chat");
+console.log(chat);
 const msgs = document.getElementById("msgs");
 
 let allChat = [];
 const INTERVAL = 3000;
+
+// submit listener for the form in HTML
+chat.addEventListener("submit", function (e) {
+  e.preventDefault();
+  postNewMsg(chat.elements.user.value, chat.elements.text.value);
+  chat.elements.text.value = "";
+});
 
 async function getNewMsgs() {
   let json;
@@ -16,9 +24,23 @@ async function getNewMsgs() {
     console.log(json);
     allChat = json.msg;
     render();
+    setTimeout(getNewMsgs, INTERVAL);
   } catch (error) {
     console.error("polling error", error);
   }
+}
+
+async function postNewMsg(user, text) {
+  const data = { user, text };
+  const options = {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  await fetch("/poll", options);
 }
 
 function render() {

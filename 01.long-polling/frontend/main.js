@@ -4,6 +4,9 @@ const msgs = document.getElementById("msgs");
 
 let allChat = [];
 const INTERVAL = 3000;
+const BACKOFF = 5000;
+let timeToMakeNewRequest = 0;
+let failedTries = 0;
 
 // submit listener for the form in HTML
 chat.addEventListener("submit", function (e) {
@@ -24,8 +27,9 @@ async function getNewMsgs() {
     console.log(json);
     allChat = json.msg;
     render();
+    failedTries = 0;
   } catch (error) {
-    console.error("polling error", error);
+    failedTries++;
   }
 }
 
@@ -53,12 +57,10 @@ function render() {
 const template = (user, msg) =>
   `<li class="collection-item"><span class="badge">${user}</span>${msg}</li>`;
 
-let timeToMakeNewRequest = 0;
-
 async function rafTimer(time) {
   if (timeToMakeNewRequest <= time) {
     await getNewMsgs();
-    timeToMakeNewRequest = time + INTERVAL;
+    timeToMakeNewRequest = time + INTERVAL + failedTries * BACKOFF;
   }
   requestAnimationFrame(rafTimer);
 }

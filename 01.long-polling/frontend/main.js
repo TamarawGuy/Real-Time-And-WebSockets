@@ -24,7 +24,6 @@ async function getNewMsgs() {
     console.log(json);
     allChat = json.msg;
     render();
-    setTimeout(getNewMsgs, INTERVAL);
   } catch (error) {
     console.error("polling error", error);
   }
@@ -54,4 +53,14 @@ function render() {
 const template = (user, msg) =>
   `<li class="collection-item"><span class="badge">${user}</span>${msg}</li>`;
 
-getNewMsgs();
+let timeToMakeNewRequest = 0;
+
+async function rafTimer(time) {
+  if (timeToMakeNewRequest <= time) {
+    await getNewMsgs();
+    timeToMakeNewRequest = time + INTERVAL;
+  }
+  requestAnimationFrame(rafTimer);
+}
+
+requestAnimationFrame(rafTimer);

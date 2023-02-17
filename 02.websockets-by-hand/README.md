@@ -2,7 +2,7 @@
 
 The aim of this project is create a raw implementation of a web socket connection using the Browser's `new WebSocket` API.
 
-- `express` -> I chose Express for the development of the server, because it is most commonly used in the Node.js environment.
+- `http` ->  we are using Node.js built-in library to create the server.
 - `body-parser` -> allows Express to parse request bodies from the browser.
 - `nanobuffer` -> allows us to create capped collection. In our array we will have mostly 50 messages and drop them off the end. For the sake of simplicity we're using this instead of database.
 - `morgan` -> A logging library so we can see some nice request logs
